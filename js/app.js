@@ -1,8 +1,42 @@
 /*
- * Create a list that holds all of your cards
+ * Create a list that holds all of your cards with enough cards to fill
  */
+const cards = ['diamond', 'paper-plane-o', 'anchor', 'bolt', 'cube', 'leaf', 'bicycle', 'bomb'];
+const deck = document.querySelector('.deck');
+const deckCards = document.querySelectorAll('.deck li');
+const playCards= playDeck(cards);
+let openCards = [];
+/**
+ * Gets the right number of cards from the card array depending on on the deck available.
+ * 
+ * @param {array} cards Card array
+ * @returns {array} Card array to be used
+ */
+function playDeck(cards) {
+    if (deckCards.length > cards.length * 2){
+    console.log('Deck size bigger than cards available')
+    return [];}
+    else{
+        const selectCards = cards.slice(0, deckCards.length/2);
+        return [...selectCards, ...selectCards];
+    }
+}
 
+fillCards(shuffle(playCards));
 
+/**
+ * Toggles the card classes with the card array provided in the deck list.
+ * 
+ * @param {array} playingCards 
+ */
+function fillCards (playingCards) {
+    if (deckCards.length === playingCards.length){
+        deckCards.forEach((x,i) => deckCards[i].firstElementChild.classList.toggle('fa-' + playCards[i]));
+    }
+    else {
+        console.log('Amount of cards does not matach the deck');
+    }
+}
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
