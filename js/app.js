@@ -4,7 +4,13 @@
 const cards = ['diamond', 'paper-plane-o', 'anchor', 'bolt', 'cube', 'leaf', 'bicycle', 'bomb'];
 const deck = document.querySelector('.deck');
 const deckCards = document.querySelectorAll('.deck li');
-const playCards= playDeck(cards);
+const matchingCards = document.getElementsByClassName('match');
+const winningMessage = document.querySelector('.won');
+const playCards = playDeck(cards);
+const counterElement = document.querySelector('.moves');
+const starsContainer = document.querySelector('.stars');
+let stars = 3;
+let counter = 0;
 let openCards = [];
 let clearingFlag = false;
 /**
@@ -106,6 +112,29 @@ function cardMatch() {
     openCards[1].classList.toggle('match');
 }
 
+function moveCount() {
+    counter++
+    counterElement.textContent = counter;
+    if (counter == 16 || counter == 32) {
+        removeStar()
+    }
+}
+
+function removeStar() {
+    stars--
+    starsContainer.lastElementChild.remove()
+}
+
+function wonGame() {
+    if (deckCards.length == matchingCards.length) {
+        winningMessage.style.display = "flex";
+        const msgMoves = document.querySelector('.last-move');
+        const msgStars = document.querySelector('.last-star');
+        console.log(msgMoves);
+        msgMoves.textContent = counter;
+        msgStars. textContent = stars;
+    }
+}
 deck.addEventListener('click', showCard)
 
 
@@ -113,18 +142,20 @@ deck.addEventListener('click', showCard)
 function showCard(event){
     const clickedCard = event.target;
     console.log(clickedCard);
-    if(clickedCard.tagName == 'LI' && openCards.length < 2 && clickedCard.className !== 'card match'){
+    if(clickedCard.tagName == 'LI' && openCards.length < 2 && clickedCard.className !== 'card match' && clickedCard.className !== 'card show open'){
         displayCard(clickedCard);
         openCard(clickedCard);
+        moveCount();
     }
     if (openCards.length == 2 && !checkCard() && !clearingFlag) {
         clearingFlag = true;
         setTimeout(() => {
             clearOpenCards()
-        }, 1000);
+        }, 500);
     }   else if (checkCard()){
         cardMatch()
         clearOpenCards()
+        wonGame()
     }
 
 }
