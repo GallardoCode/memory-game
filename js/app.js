@@ -35,7 +35,10 @@ function playDeck(cards) {
 }
 
 fillCards(shuffle(playCards));
-
+/**
+ * This resets the game variables, content and repopulates the cards
+ * 
+ */
 function resetGame() {
     fillCards(shuffle(playCards));
     stars = 3;
@@ -49,7 +52,11 @@ function resetGame() {
     timerElement.textContent = "00:00"
 
 }
-
+/**
+ * Resets the number of stars the game begins with
+ * 
+ * @param {number} num Interger number to set star
+ */
 function resetStars(num) {
     const frag = document.createDocumentFragment();
     while (starsContainer.hasChildNodes()) {
@@ -113,20 +120,31 @@ function shuffle(array) {
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
 
-
+/**
+ * Toggles classes an element to display css properties
+ * 
+ * @param {object} node HTML Element
+ */
 function displayCard(node) {
     node.classList.toggle('show');
     node.classList.toggle('open');
 }
 
+/**
+ * Adds a card element to the openCards array
+ *  
+ * @param {object} card HTML Element
+ */
 function openCard (card){
-        openCards.push(card);
-    console.log("card tag " + card.tagName);
-    console.log(openCards);
+    openCards.push(card);
 }
 
+/**
+ * Sets a flag to prevent other cards being clicked and removes the only 2
+ * cards in the openCards array. Clears the flag when done.
+ * 
+ */
 function clearOpenCards() {
-    console.log("clearing");
     clearingFlag = true;
     displayCard(openCards[0]);
     displayCard(openCards[1]);
@@ -135,6 +153,11 @@ function clearOpenCards() {
 
 }
 
+/**
+ * Checks if the 2 cards in the openCards array match.
+ * 
+ * @returns Boolean
+ */
 function checkCard() {
     return (openCards.length == 2 && openCards[0].firstElementChild.className === openCards[1].firstElementChild.className) ?
         true
@@ -142,11 +165,19 @@ function checkCard() {
         false;
 }
 
+/**
+ * Toggles an element class '.match'
+ * 
+ */
 function cardMatch() {
     openCards[0].classList.toggle('match');
     openCards[1].classList.toggle('match');
 }
 
+/**
+ * Incrememnts the count variable and reduces the star number if it reaches a certain amount.
+ * 
+ */
 function moveCount() {
     counter++
     counterElement.textContent = counter;
@@ -155,11 +186,20 @@ function moveCount() {
     }
 }
 
+/**
+ * Removes stars from the variable and the elements showing the star icon.
+ * 
+ */
 function removeStar() {
     stars--
     starsContainer.lastElementChild.remove()
 }
 
+/**
+ * Checks if the game is won by checking if the ammount of matches meet the amount of
+ * starting cards. If it does then a result window is shown with the stats of the game.
+ * 
+ */
 function wonGame() {
     if (deckCards.length == matchingCards.length) {
         stopTimer()
@@ -173,27 +213,37 @@ function wonGame() {
         msgTime.textContent = showTime();
     }
 }
+
+// Card click event listener
 deck.addEventListener('click', showCard)
 
 
-
+/**
+ * Flips card and compares
+ * 
+ * @param {any} event 
+ */
 function showCard(event){
     const clickedCard = event.target;
     console.log(clickedCard);
+    //If the time is not running, run it
     if(!isTimer){
         isTimer = true;
         timeInterval = setInterval(runTimer, 1000)
     };
+    //If it's card and only 2 are select and the card is not already matched or open
     if(clickedCard.tagName == 'LI' && openCards.length < 2 && clickedCard.className !== 'card match' && clickedCard.className !== 'card show open'){
         displayCard(clickedCard);
         openCard(clickedCard);
         moveCount();
     }
+    //when 2 cards are open and don't match then clear them
     if (openCards.length == 2 && !checkCard() && !clearingFlag) {
         clearingFlag = true;
         setTimeout(() => {
             clearOpenCards()
         }, 500);
+    //when 2 cards do match then keep them open and check if the game is over
     }   else if (checkCard()){
         cardMatch()
         clearOpenCards()
@@ -202,31 +252,56 @@ function showCard(event){
 
 }
 
+/**
+ * Closes the result window
+ * 
+ */
 function closeResults() {
     const won = document.querySelector('.won');
     won.style.display = "none";
 };
 
+//invlokes the closing of the event window on click
 winningMessage.addEventListener('click', closeResults);
 
+//game reset event listener
 restart.addEventListener('click', resetGame);
 
+/**
+ * Incremenets the time variable every second and updates the time element
+ * 
+ */
 function runTimer() {
     time++;
     timerElement.textContent = showTime();
 }
 
+/**
+ * Converts the time from seconds to minutes:seconds '00:00'
+ * 
+ * @returns String
+ */
 function showTime() {
     let minutes = Math.floor(time/60);
     let seconds = Math.floor(time - (minutes*60));
     return `${leadingZero(minutes)} : ${leadingZero(seconds)}`;
 }
 
+/**
+ * Stops the the time interval
+ * 
+ */
 function stopTimer() {
     isTimer = false;
     clearInterval(timeInterval);
 }
 
+/**
+ * Takes an integer with a single digit and adds a leading zero
+ * 
+ * @param {any} time 
+ * @returns 
+ */
 function leadingZero(time) {
 	if (time <= 9) {
 		time = "0" + time;
