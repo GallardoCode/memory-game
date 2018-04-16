@@ -6,6 +6,7 @@ const deck = document.querySelector('.deck');
 const deckCards = document.querySelectorAll('.deck li');
 const playCards= playDeck(cards);
 let openCards = [];
+let clearingFlag = false;
 /**
  * Gets the right number of cards from the card array depending on on the deck available.
  * 
@@ -70,3 +71,61 @@ function shuffle(array) {
  *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
+
+
+function displayCard(node) {
+    node.classList.toggle('show');
+    node.classList.toggle('open');
+}
+
+function openCard (card){
+        openCards.push(card);
+    console.log("card tag " + card.tagName);
+    console.log(openCards);
+}
+
+function clearOpenCards() {
+    console.log("clearing");
+    clearingFlag = true;
+    displayCard(openCards[0]);
+    displayCard(openCards[1]);
+    openCards = [];
+    clearingFlag = false;
+
+}
+
+function checkCard() {
+    return (openCards.length == 2 && openCards[0].firstElementChild.className === openCards[1].firstElementChild.className) ?
+        true
+    :
+        false;
+}
+
+function cardMatch() {
+    openCards[0].classList.toggle('match');
+    openCards[1].classList.toggle('match');
+}
+
+deck.addEventListener('click', showCard)
+
+
+
+function showCard(event){
+    const clickedCard = event.target;
+    console.log(clickedCard);
+    if(clickedCard.tagName == 'LI' && openCards.length < 2 && clickedCard.className !== 'card match'){
+        displayCard(clickedCard);
+        openCard(clickedCard);
+    }
+    if (openCards.length == 2 && !checkCard() && !clearingFlag) {
+        clearingFlag = true;
+        setTimeout(() => {
+            clearOpenCards()
+        }, 1000);
+    }   else if (checkCard()){
+        cardMatch()
+        clearOpenCards()
+    }
+
+}
+
