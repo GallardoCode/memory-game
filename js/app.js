@@ -10,10 +10,14 @@ const playCards = playDeck(cards);
 const counterElement = document.querySelector('.moves');
 const starsContainer = document.querySelector('.stars');
 const restart = document.querySelector('.restart');
+const timerElement = document.querySelector('.time');
 let stars = 3;
 let counter = 0;
 let openCards = [];
 let clearingFlag = false;
+let isTimer = false;
+let time = 0;
+let timeInterval;
 /**
  * Gets the right number of cards from the card array depending on on the deck available.
  * 
@@ -40,6 +44,9 @@ function resetGame() {
     resetStars(stars);
     winningMessage.style.display = 'none';
     counterElement.textContent = 0;
+    stopTimer();
+    time = 0;
+    timerElement.textContent = "00:00"
 
 }
 
@@ -155,12 +162,15 @@ function removeStar() {
 
 function wonGame() {
     if (deckCards.length == matchingCards.length) {
+        stopTimer()
         winningMessage.style.display = "flex";
         const msgMoves = document.querySelector('.last-move');
         const msgStars = document.querySelector('.last-star');
+        const msgTime = document.querySelector('.last-time');
         console.log(msgMoves);
         msgMoves.textContent = counter;
-        msgStars. textContent = stars;
+        msgStars.textContent = stars;
+        msgTime.textContent = showTime();
     }
 }
 deck.addEventListener('click', showCard)
@@ -170,6 +180,10 @@ deck.addEventListener('click', showCard)
 function showCard(event){
     const clickedCard = event.target;
     console.log(clickedCard);
+    if(!isTimer){
+        isTimer = true;
+        timeInterval = setInterval(runTimer, 1000)
+    };
     if(clickedCard.tagName == 'LI' && openCards.length < 2 && clickedCard.className !== 'card match' && clickedCard.className !== 'card show open'){
         displayCard(clickedCard);
         openCard(clickedCard);
@@ -188,4 +202,34 @@ function showCard(event){
 
 }
 
+function closeResults() {
+    const won = document.querySelector('.won');
+    won.style.display = "none";
+};
+
+winningMessage.addEventListener('click', closeResults);
+
 restart.addEventListener('click', resetGame);
+
+function runTimer() {
+    time++;
+    timerElement.textContent = showTime();
+}
+
+function showTime() {
+    let minutes = Math.floor(time/60);
+    let seconds = Math.floor(time - (minutes*60));
+    return `${leadingZero(minutes)} : ${leadingZero(seconds)}`;
+}
+
+function stopTimer() {
+    isTimer = false;
+    clearInterval(timeInterval);
+}
+
+function leadingZero(time) {
+	if (time <= 9) {
+		time = "0" + time;
+	}
+	return time;
+}
