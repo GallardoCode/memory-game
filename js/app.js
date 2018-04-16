@@ -9,6 +9,7 @@ const winningMessage = document.querySelector('.won');
 const playCards = playDeck(cards);
 const counterElement = document.querySelector('.moves');
 const starsContainer = document.querySelector('.stars');
+const restart = document.querySelector('.restart');
 let stars = 3;
 let counter = 0;
 let openCards = [];
@@ -31,6 +32,31 @@ function playDeck(cards) {
 
 fillCards(shuffle(playCards));
 
+function resetGame() {
+    fillCards(shuffle(playCards));
+    stars = 3;
+    counter = 0;
+    openCards = [];
+    resetStars(stars);
+    winningMessage.style.display = 'none';
+    counterElement.textContent = 0;
+
+}
+
+function resetStars(num) {
+    const frag = document.createDocumentFragment();
+    while (starsContainer.hasChildNodes()) {
+        starsContainer.removeChild(starsContainer.lastChild);
+    }
+    for (let x = 0; x < num; x++) {
+        const li = document.createElement('li');
+        const icon = document.createElement('i');
+        icon.classList.add('fa', 'fa-star');
+        frag.appendChild(li.appendChild(icon));
+    }
+    console.log(frag);
+    starsContainer.appendChild(frag);
+}
 /**
  * Toggles the card classes with the card array provided in the deck list.
  * 
@@ -38,7 +64,9 @@ fillCards(shuffle(playCards));
  */
 function fillCards (playingCards) {
     if (deckCards.length === playingCards.length){
-        deckCards.forEach((x,i) => deckCards[i].firstElementChild.classList.toggle('fa-' + playCards[i]));
+        deckCards.forEach((x,i)=> deckCards[i].classList.remove('match', 'show', 'open'));
+        deckCards.forEach((x,i) => deckCards[i].firstElementChild.className = '');
+        deckCards.forEach((x,i) => deckCards[i].firstElementChild.classList.add('fa', 'fa-' + playCards[i]));
     }
     else {
         console.log('Amount of cards does not matach the deck');
@@ -160,3 +188,4 @@ function showCard(event){
 
 }
 
+restart.addEventListener('click', resetGame);
