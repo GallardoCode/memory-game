@@ -10,6 +10,7 @@ const playCards = playDeck(cards);
 const counterElement = document.querySelector('.moves');
 const starsContainer = document.querySelector('.stars');
 const restart = document.querySelector('.restart');
+const replay = document.querySelector('.replay')
 const timerElement = document.querySelector('.time');
 let stars = 3;
 let counter = 0;
@@ -257,9 +258,11 @@ function showCard(event){
  * Closes the result window
  * 
  */
-function closeResults() {
+function closeResults(e) {
+    if (winningMessage == e.target) {
     const won = document.querySelector('.won');
     won.style.display = "none";
+    }
 };
 
 //invlokes the closing of the event window on click
@@ -267,6 +270,9 @@ winningMessage.addEventListener('click', closeResults);
 
 //game reset event listener
 restart.addEventListener('click', resetGame);
+
+//replay game event listener
+replay.addEventListener('click', resetGame);
 
 /**
  * Incremenets the time variable every second and updates the time element
