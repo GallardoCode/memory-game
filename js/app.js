@@ -235,7 +235,6 @@ function showCard(event){
     if(clickedCard.tagName == 'LI' && openCards.length < 2 && clickedCard.className !== 'card match' && clickedCard.className !== 'card show open'){
         displayCard(clickedCard);
         openCard(clickedCard);
-        moveCount();
     }
     //when 2 cards are open and don't match then clear them
     if (openCards.length == 2 && !checkCard() && !clearingFlag) {
@@ -243,10 +242,12 @@ function showCard(event){
         setTimeout(() => {
             clearOpenCards()
         }, 500);
+        moveCount();
     //when 2 cards do match then keep them open and check if the game is over
     }   else if (checkCard()){
         cardMatch()
         clearOpenCards()
+        moveCount();
         wonGame()
     }
 
